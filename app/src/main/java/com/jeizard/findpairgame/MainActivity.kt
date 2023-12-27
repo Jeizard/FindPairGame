@@ -99,8 +99,8 @@ private val COIN_COLOR = Color(0xFFFFD500)
 
 class MainActivity : ComponentActivity() {
     private lateinit var coinViewModel: CoinsViewModel
-    private val timerViewModel: TimerViewModel by viewModels() // как работает?
-    private val cardsViewModel: CardsViewModel by viewModels() // как работает?
+    private val timerViewModel: TimerViewModel by viewModels()
+    private val cardsViewModel: CardsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -117,7 +117,7 @@ class MainActivity : ComponentActivity() {
                             if (navController.currentBackStackEntry?.destination?.route != MENU_ROUTE) {
                                 navController.navigate(MENU_ROUTE) {
                                     popUpTo(MENU_ROUTE) {
-                                        inclusive = true // что делает?
+                                        inclusive = true
                                     }
                                 }
                             } else {
