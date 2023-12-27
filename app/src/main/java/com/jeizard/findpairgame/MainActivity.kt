@@ -5,7 +5,6 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
@@ -28,7 +27,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
@@ -47,11 +45,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -60,7 +56,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -77,30 +72,13 @@ import com.jeizard.findpairgame.viewmodels.TimerViewModel
 import com.jeizard.findpairgame.viewmodels.factories.CoinsViewModelFactory
 import kotlinx.coroutines.delay
 
-private const val COINS_ICON_DESCRIPTION = "Coins icon"
-private const val TIMER_ICON_DESCRIPTION = "Timer icon"
-private const val LOGO_ICON_DESCRIPTION = "Logo icon"
-private const val CUP_ICON_DESCRIPTION = "Cup icon"
-private const val PRIVACY_ICON_DESCRIPTION = "Settings Icon"
-private const val HOME_ICON_DESCRIPTION ="Home Icon"
-private const val  CARD_IMAGE_DESCRIPTION = "Card image"
-
-private const val PLAY_BUTTON = "ИГРАТЬ"
-private const val DOUBLE_REWARD_BUTTON = "Двойная награда"
-private const val CONGRATULATION = "Поздравляем!"
-private const val WIN_MESSAGE = "Вы выиграли!"
-
-private const val MENU_ROUTE = "menu"
-private const val GAME_ROUTE = "game"
-private const val END_GAME_ROUTE = "victory"
-
-private val ELEMENTS_COLOR = Color.LightGray
-private val COIN_COLOR = Color(0xFFFFD500)
+val ELEMENTS_COLOR = Color.LightGray
+val COIN_COLOR = Color(0xFFFFD500)
 
 class MainActivity : ComponentActivity() {
     private lateinit var coinViewModel: CoinsViewModel
-    private val timerViewModel: TimerViewModel by viewModels() // как работает?
-    private val cardsViewModel: CardsViewModel by viewModels() // как работает?
+    private val timerViewModel: TimerViewModel by viewModels()
+    private val cardsViewModel: CardsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -117,7 +95,7 @@ class MainActivity : ComponentActivity() {
                             if (navController.currentBackStackEntry?.destination?.route != MENU_ROUTE) {
                                 navController.navigate(MENU_ROUTE) {
                                     popUpTo(MENU_ROUTE) {
-                                        inclusive = true // что делает?
+                                        inclusive = true
                                     }
                                 }
                             } else {
@@ -370,9 +348,7 @@ fun MenuView(navController: NavController, coinViewModel: CoinsViewModel, timerV
 
 @Composable
 fun GameScene(navController: NavController, coinViewModel: CoinsViewModel, timerViewModel: TimerViewModel, cardsViewModel: CardsViewModel) {
-    val configuration = LocalConfiguration.current
-
-    val allPairsFound by cardsViewModel.allPairsFound.observeAsState(false)
+      val allPairsFound by cardsViewModel.allPairsFound.observeAsState(false)
     LaunchedEffect(allPairsFound) {
         if (allPairsFound) {
             timerViewModel.stopTimer()
