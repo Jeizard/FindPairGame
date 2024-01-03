@@ -1,6 +1,5 @@
 package com.jeizard.findpairgame.ui.components
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -14,20 +13,17 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.jeizard.findpairgame.COIN_COLOR
+import com.jeizard.findpairgame.MetricsCalculator
 import com.jeizard.findpairgame.R
 import com.jeizard.findpairgame.strings.COINS_ICON_DESCRIPTION
+import com.jeizard.findpairgame.ui.theme.COIN_COLOR
 import com.jeizard.findpairgame.viewmodels.CoinsViewModel
 
 @Composable
 fun CoinsDisplay(coinViewModel: CoinsViewModel) {
+    val metricsCalculator = MetricsCalculator()
     val configuration = LocalConfiguration.current
-    val scale = if(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
-        configuration.screenHeightDp / 380.0
-    }
-    else{
-        configuration.screenHeightDp / 830.0
-    }
+    val scale = metricsCalculator.calculateDisplayScale(configuration)
 
     Box(
         modifier = Modifier.wrapContentSize(Alignment.TopEnd)

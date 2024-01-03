@@ -2,7 +2,6 @@ package com.jeizard.findpairgame.viewmodels
 
 import android.content.res.Configuration
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,7 +23,7 @@ class CardsViewModel : ViewModel() {
 
     private var cards = mutableStateListOf<Card>()
     private var foundPairs = 0
-    var allPairsFound = MutableLiveData(false)
+    var isAllPairsFound = MutableLiveData(false)
 
     private var orientation = Configuration.ORIENTATION_LANDSCAPE
     private var cardsCount = 0
@@ -78,7 +77,7 @@ class CardsViewModel : ViewModel() {
                     }
                     else{
                         foundPairs++
-                        allPairsFound.value = foundPairs == cards.size / 2
+                        isAllPairsFound.value = foundPairs == cards.size / 2
                     }
                     firstCardIndex = -1
                     secondCardIndex = -1
@@ -89,7 +88,7 @@ class CardsViewModel : ViewModel() {
 
     fun resetGame() {
         foundPairs = 0
-        allPairsFound.value = false
+        isAllPairsFound.value = false
         firstCardIndex = -1
         secondCardIndex = -1
         generateCards()

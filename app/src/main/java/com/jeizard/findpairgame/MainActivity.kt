@@ -24,9 +24,6 @@ import com.jeizard.findpairgame.viewmodels.CoinsViewModel
 import com.jeizard.findpairgame.viewmodels.TimerViewModel
 import com.jeizard.findpairgame.viewmodels.factories.CoinsViewModelFactory
 
-val ELEMENTS_COLOR = Color.LightGray
-val COIN_COLOR = Color(0xFFFFD500)
-
 class MainActivity : ComponentActivity() {
     private lateinit var coinViewModel: CoinsViewModel
     private val timerViewModel: TimerViewModel by viewModels()

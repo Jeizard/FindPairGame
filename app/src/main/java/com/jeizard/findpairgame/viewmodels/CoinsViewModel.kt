@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 
 private const val COINS_KEY = "coins"
 private const val COIN_PREFERENCES_KEY = "coin_preferences"
+private const val COINS_DEFAULT_VALUE = 100
 
 class CoinsViewModel(private val context: Context) : ViewModel()  {
 
@@ -15,7 +16,7 @@ class CoinsViewModel(private val context: Context) : ViewModel()  {
         Context.MODE_PRIVATE
     )
 
-    private val coinCount = mutableIntStateOf(sharedPreferences.getInt(COINS_KEY, 100))
+    private val coinCount = mutableIntStateOf(sharedPreferences.getInt(COINS_KEY, COINS_DEFAULT_VALUE))
 
     fun getCoins(): Int {
         return coinCount.value

@@ -17,19 +17,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.jeizard.findpairgame.ELEMENTS_COLOR
+import com.jeizard.findpairgame.MetricsCalculator
 import com.jeizard.findpairgame.R
 import com.jeizard.findpairgame.strings.PRIVACY_ICON_DESCRIPTION
+import com.jeizard.findpairgame.ui.theme.ELEMENTS_COLOR
 
 @Composable
 fun PrivacyButton() {
+    val metricsCalculator = MetricsCalculator()
     val configuration = LocalConfiguration.current
-    val iconSize = if(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
-        configuration.screenHeightDp / 5
-    }
-    else{
-        configuration.screenWidthDp / 5
-    }
+    val iconSize = metricsCalculator.calculateIconSize(configuration)
+
     Box(
         modifier = Modifier
             .wrapContentSize(Alignment.BottomEnd)

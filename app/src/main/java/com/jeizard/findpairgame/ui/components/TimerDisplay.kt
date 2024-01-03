@@ -1,6 +1,5 @@
 package com.jeizard.findpairgame.ui.components
 
-import android.content.res.Configuration
 import android.media.MediaPlayer
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -23,24 +22,22 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.jeizard.findpairgame.ELEMENTS_COLOR
+import com.jeizard.findpairgame.MetricsCalculator
 import com.jeizard.findpairgame.R
 import com.jeizard.findpairgame.strings.TIMER_ICON_DESCRIPTION
+import com.jeizard.findpairgame.ui.theme.ELEMENTS_COLOR
 import com.jeizard.findpairgame.viewmodels.TimerViewModel
 import kotlinx.coroutines.delay
 
 @Composable
 fun TimerDisplay(timerViewModel: TimerViewModel) {
+    val metricsCalculator = MetricsCalculator()
+    val configuration = LocalConfiguration.current
+    val scale = metricsCalculator.calculateDisplayScale(configuration)
+
     var isBlinking = remember { mutableStateOf(false) }
     var isShaking = remember { mutableStateOf(false) }
 
-    val configuration = LocalConfiguration.current
-    val scale = if(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
-        configuration.screenHeightDp /  380.0
-    }
-    else{
-        configuration.screenHeightDp / 830.0
-    }
     fun toggleTimerBlink() {
         isBlinking.value = !isBlinking.value
     }

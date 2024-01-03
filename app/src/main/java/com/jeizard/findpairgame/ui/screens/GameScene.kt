@@ -43,13 +43,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.jeizard.findpairgame.ELEMENTS_COLOR
+import com.jeizard.findpairgame.MetricsCalculator
 import com.jeizard.findpairgame.R
+import com.jeizard.findpairgame.ROW_CARDS_NUMBER
 import com.jeizard.findpairgame.entities.Card
 import com.jeizard.findpairgame.strings.CARD_IMAGE_DESCRIPTION
 import com.jeizard.findpairgame.strings.END_GAME_ROUTE
 import com.jeizard.findpairgame.ui.components.CoinsDisplay
 import com.jeizard.findpairgame.ui.components.TimerDisplay
+import com.jeizard.findpairgame.ui.theme.ELEMENTS_COLOR
 import com.jeizard.findpairgame.viewmodels.CardsViewModel
 import com.jeizard.findpairgame.viewmodels.CoinsViewModel
 import com.jeizard.findpairgame.viewmodels.TimerViewModel
@@ -57,14 +59,15 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun GameScene(navController: NavController, coinViewModel: CoinsViewModel, timerViewModel: TimerViewModel, cardsViewModel: CardsViewModel) {
-    val allPairsFound by cardsViewModel.allPairsFound.observeAsState(false)
-    LaunchedEffect(allPairsFound) {
-        if (allPairsFound) {
+    val isAllPairsFound by cardsViewModel.isAllPairsFound.observeAsState(false)
+    LaunchedEffect(isAllPairsFound) {
+        if (isAllPairsFound) {
             timerViewModel.stopTimer()
             delay(1000)
             navController.navigate(END_GAME_ROUTE)
         }
     }
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -93,29 +96,12 @@ fun GameScene(navController: NavController, coinViewModel: CoinsViewModel, timer
 
 @Composable
 fun CardsGrid(cards: List<Card>, cardsViewModel: CardsViewModel, timerViewModel: TimerViewModel) {
+    val metricsCalculator = MetricsCalculator()
     val configuration = LocalConfiguration.current
-    val cardSize = if(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
-        val cardHeight = (configuration.screenHeightDp.dp - 120.dp) / 5
-        val cardWidth = configuration.screenWidthDp.dp / 6
-        minOf(cardHeight, cardWidth)
-    }
-    else{
-        val cardHeight = (configuration.screenHeightDp.dp - 120.dp) / 6
-        val cardWidth = configuration.screenWidthDp.dp / 5
-        minOf(cardHeight, cardWidth)
-    }
-    val paddingStartAndEnd = if(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
-        (configuration.screenWidthDp.dp - cardSize * 5 - cardSize / 20 * 5 * 2) / 2
-    }
-    else{
-        (configuration.screenWidthDp.dp - cardSize * 4 - cardSize / 20 * 4 * 2) / 2
-    }
-    val paddingTopAndBottom = if(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
-        ((configuration.screenHeightDp.dp - 120.dp) - cardSize * 4 - cardSize / 20 * 4 * 2) / 2
-    }
-    else{
-        ((configuration.screenHeightDp.dp - 120.dp) - cardSize * 5 - cardSize / 20 * 5 * 2) / 2
-    }
+    val cardSize = metricsCalculator.calculateCardSize(configuration)
+    val paddingStartAndEnd = metricsCalculator.calculateStartAndEndPadding(configuration, cardSize)
+    val paddingTopAndBottom = metricsCalculator.calculateTopAndBottomPadding(configuration, cardSize)
+
     Box(
         modifier = Modifier
             .padding(
@@ -129,7 +115,7 @@ fun CardsGrid(cards: List<Card>, cardsViewModel: CardsViewModel, timerViewModel:
     ) {
         if(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             LazyHorizontalGrid(
-                rows = GridCells.Fixed(4),
+                rows = GridCells.Fixed(ROW_CARDS_NUMBER),
                 reverseLayout = true
             ) {
                 itemsIndexed(cards) { index, card ->
@@ -145,7 +131,7 @@ fun CardsGrid(cards: List<Card>, cardsViewModel: CardsViewModel, timerViewModel:
         }
         else{
             LazyVerticalGrid(
-                columns = GridCells.Fixed(4)
+                columns = GridCells.Fixed(ROW_CARDS_NUMBER)
             ) {
                 itemsIndexed(cards) { index, card ->
                     CardItem(

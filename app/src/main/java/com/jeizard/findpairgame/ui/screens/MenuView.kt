@@ -1,6 +1,5 @@
 package com.jeizard.findpairgame.ui.screens
 
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,11 +21,11 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.jeizard.findpairgame.MetricsCalculator
 import com.jeizard.findpairgame.R
 import com.jeizard.findpairgame.strings.GAME_ROUTE
 import com.jeizard.findpairgame.strings.LOGO_ICON_DESCRIPTION
 import com.jeizard.findpairgame.strings.PLAY_BUTTON
-import com.jeizard.findpairgame.strings.PRIVACY_ICON_DESCRIPTION
 import com.jeizard.findpairgame.ui.components.CoinsDisplay
 import com.jeizard.findpairgame.ui.components.PrivacyButton
 import com.jeizard.findpairgame.viewmodels.CardsViewModel
@@ -35,12 +34,10 @@ import com.jeizard.findpairgame.viewmodels.TimerViewModel
 
 @Composable
 fun MenuView(navController: NavController, coinViewModel: CoinsViewModel, timerViewModel: TimerViewModel, cardsViewModel: CardsViewModel) {
+    val metricsCalculator = MetricsCalculator()
     val configuration = LocalConfiguration.current
-    val isWideScreen = if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-        false
-    } else {
-        configuration.screenHeightDp > 600
-    }
+    val isDisplayIcon = metricsCalculator.shouldDisplayIcon(configuration)
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -51,7 +48,7 @@ fun MenuView(navController: NavController, coinViewModel: CoinsViewModel, timerV
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (isWideScreen) {
+            if (isDisplayIcon) {
                 Image(
                     painter = painterResource(id = R.drawable.icon),
                     contentDescription = LOGO_ICON_DESCRIPTION,

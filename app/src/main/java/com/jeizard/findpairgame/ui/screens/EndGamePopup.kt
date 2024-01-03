@@ -1,6 +1,5 @@
 package com.jeizard.findpairgame.ui.screens
 
-import android.content.res.Configuration
 import android.media.MediaPlayer
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,8 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.jeizard.findpairgame.COIN_COLOR
-import com.jeizard.findpairgame.ELEMENTS_COLOR
+import com.jeizard.findpairgame.MetricsCalculator
 import com.jeizard.findpairgame.R
 import com.jeizard.findpairgame.strings.COINS_ICON_DESCRIPTION
 import com.jeizard.findpairgame.strings.CONGRATULATION
@@ -45,6 +43,8 @@ import com.jeizard.findpairgame.strings.DOUBLE_REWARD_BUTTON
 import com.jeizard.findpairgame.strings.HOME_ICON_DESCRIPTION
 import com.jeizard.findpairgame.strings.MENU_ROUTE
 import com.jeizard.findpairgame.strings.WIN_MESSAGE
+import com.jeizard.findpairgame.ui.theme.COIN_COLOR
+import com.jeizard.findpairgame.ui.theme.ELEMENTS_COLOR
 import com.jeizard.findpairgame.viewmodels.CardsViewModel
 import com.jeizard.findpairgame.viewmodels.CoinsViewModel
 import com.jeizard.findpairgame.viewmodels.TimerViewModel
@@ -55,24 +55,22 @@ fun EndGamePopup(navController: NavController, coinViewModel: CoinsViewModel, ti
     val context = LocalContext.current
     val mediaPlayer = remember { MediaPlayer.create(context, R.raw.win_sound) }
 
+    val metricsCalculator = MetricsCalculator()
     val configuration = LocalConfiguration.current
-    val isWideScreen = if(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
-        false
-    }
-    else{
-        configuration.screenHeightDp > 600
-    }
+    val isDisplayIcon = metricsCalculator.shouldDisplayIcon(configuration)
 
-    val allPairsFound by cardsViewModel.allPairsFound.observeAsState(false)
-    LaunchedEffect(allPairsFound) {
-        if (allPairsFound) {
+    val isAllPairsFound by cardsViewModel.isAllPairsFound.observeAsState(false)
+    LaunchedEffect(isAllPairsFound) {
+        if (isAllPairsFound) {
             mediaPlayer.start()
             delay(1000)
             cardsViewModel.resetGame()
             coinViewModel.addCoins(coinViewModel.calculateReward(timerViewModel.getSeconds()))
         }
     }
+
     val reward = coinViewModel.calculateReward(timerViewModel.getSeconds())
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -84,7 +82,7 @@ fun EndGamePopup(navController: NavController, coinViewModel: CoinsViewModel, ti
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if(isWideScreen) {
+            if(isDisplayIcon) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_cup),
                     contentDescription = CUP_ICON_DESCRIPTION,
